@@ -26,7 +26,7 @@ public class MidiEvent {
     }
     public void setEventChannel(int channel) {
         /* channels are numbered 1-16 but 0-15 in the midi spec */
-        event[0] += (byte)(channel-1);
+        event[0] |= (byte)(channel-1);
     }
 
     public void setEventPitch(final Notes note, final int octave, final int halfsteps) {
