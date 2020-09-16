@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.util.Log;
@@ -16,10 +17,11 @@ import com.noisystudios.tabletmvp.midinotes.Notes;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
-public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidiStartListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidiStartListener, View.OnTouchListener, AdapterView.OnItemSelectedListener {
 
     Button bt;
     MidiDriver midiDriver = new MidiDriver();
+    Notes currentKey;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -39,6 +41,29 @@ public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidi
         keyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         keySpinner.setAdapter(keyAdapter);
+        keySpinner.setOnItemSelectedListener(this);
+        switch ((String)keySpinner.getSelectedItem()) {
+            case "A":
+                currentKey = Notes.A;
+                break;
+            case "B":
+                currentKey = Notes.B;
+                break;
+            case "C":
+                currentKey = Notes.C;
+                break;
+            case "D":
+                currentKey = Notes.D;
+                break;
+            case "E":
+                currentKey = Notes.E;
+                break;
+            case "F":
+                currentKey = Notes.F;
+                break;
+            case "G":
+                currentKey = Notes.G;
+        }
 
         Spinner tempoSpinner = (Spinner) findViewById(R.id.tempo);
         ArrayAdapter<CharSequence> tempoAdapter = ArrayAdapter.createFromResource(this,
@@ -86,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidi
         MidiEvent event = new MidiEvent();
         event.setNoteOn();
         event.setEventChannel(1); // out of 1-16
-        event.setEventPitch(Notes.C, 0, 0);
+        event.setEventPitch(currentKey, 0, 0);
         event.setEventVelocity((byte)0x40);
 
         midiDriver.write(event.getEvent());
@@ -96,10 +121,42 @@ public class MainActivity extends AppCompatActivity implements MidiDriver.OnMidi
         MidiEvent event = new MidiEvent();
         event.setNoteOff();
         event.setEventChannel(1); // out of 1-16
-        event.setEventPitch(Notes.C, 0, 0);
+        event.setEventPitch(currentKey, 0, 0);
         event.setEventVelocity((byte)0x00);
 
         midiDriver.write(event.getEvent());
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(this.getClass().getName(), "item selected: " + (String)parent.getItemAtPosition(position));
+        switch ((String)parent.getItemAtPosition(position)) {
+            case "A":
+                currentKey = Notes.A;
+                break;
+            case "B":
+                currentKey = Notes.B;
+                break;
+            case "C":
+                currentKey = Notes.C;
+                break;
+            case "D":
+                currentKey = Notes.D;
+                break;
+            case "E":
+                currentKey = Notes.E;
+                break;
+            case "F":
+                currentKey = Notes.F;
+                break;
+            case "G":
+                currentKey = Notes.G;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }
 

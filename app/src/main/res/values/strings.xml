@@ -1,13 +1,13 @@
 <resources>
     <string name="app_name">Tablet MVP</string>
     <string-array name="keys_array">
-        <item>a</item>
-        <item>b</item>
-        <item>c</item>
-        <item>d</item>
-        <item>e</item>
-        <item>f</item>
-        <item>g</item>
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+        <item>G</item>
     </string-array>
     <string-array name="tempos_array">
         <item>60</item>
