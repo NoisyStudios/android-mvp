@@ -29,8 +29,9 @@ public class MidiEvent {
         event[0] |= (byte)(channel-1);
     }
 
+    // TODO this is deprecated (i know, it was fast)
     public void setEventPitch(final Notes note, final int octave, final int halfsteps) {
-        byte pitch = (byte)(MIDDLE_C + note.getHalfstepOffset() + octave*SEMITONES_PER_OCTAVE + halfsteps);
+        byte pitch = (byte)(MIDDLE_C + note.getHalfstepOffsetFromC() + octave*SEMITONES_PER_OCTAVE + halfsteps);
         event[1] = pitch;
     }
 

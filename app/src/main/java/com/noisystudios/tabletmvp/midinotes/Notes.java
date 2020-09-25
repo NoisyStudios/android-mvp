@@ -9,11 +9,18 @@ public enum Notes {
     F(5),
     G(7);
 
-    private int halfstepOffset;
+    private static final int SEMITONES_PER_OCTAVE = 12;
+    private static final int MIDDLE_C = 0x3c;
+
+    private int halfstepOffsetFromC;
     Notes(int offset) {
-        this.halfstepOffset = offset;
+        this.halfstepOffsetFromC = offset;
     }
-    int getHalfstepOffset() {
-        return halfstepOffset;
+    int getHalfstepOffsetFromC() {
+        return halfstepOffsetFromC;
+    }
+
+    public static int getPitch(Notes note, int octavesUpFromMiddleC, int halfstepsUp) {
+        return MIDDLE_C + note.getHalfstepOffsetFromC() + SEMITONES_PER_OCTAVE * octavesUpFromMiddleC + halfstepsUp;
     }
 }

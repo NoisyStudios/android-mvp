@@ -13,4 +13,4 @@ there also needs to be support for pitch bend, etc. but that can come later
 three things
 1. enum instrument list
 2. enum note list
-3. wrapper class that handles building midi events from instrument and pitch + velocity
+3. wrapper/other pojo-oriented classes that handles building midi events from instrument and pitch + velocity
