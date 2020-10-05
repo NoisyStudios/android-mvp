@@ -1,9 +1,11 @@
-package com.noisystudios.tabletmvp.instruments;
+package com.noisystudios.tabletmvp.midi;
+
+import static com.noisystudios.tabletmvp.midi.MidiConstants.PERCUSSION_OFFSET;
 
 public enum Instrument {
 
     PIANO(0),
-    SIDE_STICK(256 + 37);
+    SIDE_STICK(PERCUSSION_OFFSET + 37);
 
     private int midiCode;
     Instrument(int midiCode) {
@@ -12,7 +14,5 @@ public enum Instrument {
     public int getMidiCode() {
         return midiCode;
     }
-
-    public static int PERCUSSION_OFFSET = 256; // this needs to be hardcoded above because java is stupid
 
 }

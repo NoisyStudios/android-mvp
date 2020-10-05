@@ -1,4 +1,4 @@
-package com.noisystudios.tabletmvp.instruments;
+package com.noisystudios.tabletmvp.midi;
 
 // This is a POJO which might get some complex population code
 public class InstrumentEvent {
@@ -34,6 +34,18 @@ public class InstrumentEvent {
     }
     public void setTurnOn(boolean turnOn) {
         this.turnOn = turnOn;
+    }
+
+    public MidiEvent toMidiEvent(final int channel) {
+        MidiEvent event = new MidiEvent().withEventPitch((byte)pitch)
+                                         .withEventVelocity((byte)velocity);
+
+        if (turnOn) event.setNoteOn();
+        else event.setNoteOff();
+
+        event.setEventChannel(channel);
+
+        return event;
     }
 
 }

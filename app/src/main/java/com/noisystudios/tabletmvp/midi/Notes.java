@@ -1,4 +1,4 @@
-package com.noisystudios.tabletmvp.midinotes;
+package com.noisystudios.tabletmvp.midi;
 
 public enum Notes {
     A(-3),
@@ -23,4 +23,6 @@ public enum Notes {
     public static int getPitch(Notes note, int octavesUpFromMiddleC, int halfstepsUp) {
         return MIDDLE_C + note.getHalfstepOffsetFromC() + SEMITONES_PER_OCTAVE * octavesUpFromMiddleC + halfstepsUp;
     }
+
+    // might be worth it to just hardcode this into a map at the beginning, to cut down on computation time later
 }

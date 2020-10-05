@@ -12,8 +12,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-import com.noisystudios.tabletmvp.midinotes.MidiEvent;
-import com.noisystudios.tabletmvp.midinotes.Notes;
+import com.noisystudios.tabletmvp.midi.MidiEvent;
+import com.noisystudios.tabletmvp.midi.Notes;
 
 import org.billthefarmer.mididriver.MidiDriver;
 
