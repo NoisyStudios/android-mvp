@@ -12,7 +12,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
-import com.noisystudios.tabletmvp.midi.MidiEvent;
+import com.noisystudios.tabletmvp.midi.Instrument;
+import com.noisystudios.tabletmvp.midi.InstrumentEvent;
+import com.noisystudios.tabletmvp.midi.InstrumentPlayer;
+import com.noisystudios.tabletmvp.midi.MidiMessage;
 import com.noisystudios.tabletmvp.midi.Notes;
 
 import org.billthefarmer.mididriver.MidiDriver;
@@ -22,6 +25,7 @@ public class FreeStyleActivity extends AppCompatActivity implements MidiDriver.O
     Button bt;
     MidiDriver midiDriver = new MidiDriver();
     Notes currentKey;
+    InstrumentPlayer instrumentPlayer = new InstrumentPlayer();
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -74,7 +78,11 @@ public class FreeStyleActivity extends AppCompatActivity implements MidiDriver.O
         midiDriver.setOnMidiStartListener(this);
         midiDriver.start();
 
-        bt = (Button) findViewById(R.id.button);
+        bt = findViewById(R.id.button);
+        bt.setOnTouchListener(this);
+        bt = findViewById(R.id.button2);
+        bt.setOnTouchListener(this);
+        bt = findViewById(R.id.button3);
         bt.setOnTouchListener(this);
     }
 
@@ -83,15 +91,31 @@ public class FreeStyleActivity extends AppCompatActivity implements MidiDriver.O
     public boolean onTouch(View v, MotionEvent event) {
         Log.d(this.getClass().getName(), "Motion event: " + event);
 
-        if (v.getId() == R.id.button) {
+        if (v.getId() == R.id.button2) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.d(this.getClass().getName(), "MotionEvent.ACTION_DOWN");
-                    playNote();
+                    playNote(Instrument.PIANO);
                     break;
                 case MotionEvent.ACTION_UP:
-                    Log.d(this.getClass().getName(), "MotionEvent.ACTION_UP");
-                    stopNote();
+                    stopNote(Instrument.PIANO);
+            }
+        }
+        else if (v.getId() == R.id.button) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    playNote(Instrument.SIDE_STICK);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    stopNote(Instrument.SIDE_STICK);
+            }
+        }
+        else if (v.getId() == R.id.button3) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    playMajorChord(Instrument.PIANO);
+                    break;
+                case MotionEvent.ACTION_UP:
+                    stopMajorChord(Instrument.PIANO);
             }
         }
 
@@ -100,31 +124,65 @@ public class FreeStyleActivity extends AppCompatActivity implements MidiDriver.O
 
     @Override
     public void onMidiStart() {
-        MidiEvent event = new MidiEvent();
-        event.setEventMessage((byte)0xc0);
-        event.setEventPitch((byte)0x00);
-
-        midiDriver.write(event.getEvent());
+//        MidiMessage event = new MidiMessage();
+//        event.setEventMessage((byte)0xc0);
+//        event.setEventPitch((byte)0x00);
+//
+//        midiDriver.write(event.getEvent());
     }
 
-    private void playNote() {
-        MidiEvent event = new MidiEvent();
-        event.setNoteOn();
-        event.setEventChannel(1); // out of 1-16
-        event.setEventPitch(currentKey, 0, 0);
-        event.setEventVelocity((byte)0x40);
+    private void playNote(Instrument instrument) {
+        InstrumentEvent event = new InstrumentEvent();
+        event.setInstrument(instrument);
+        event.setTurnOn(true);
+        event.setPitch(currentKey.getPitch(0, 0));
+        event.setVelocity(127);
 
-        midiDriver.write(event.getEvent());
+        for (MidiMessage message : instrumentPlayer.getMidiEvents(event)) {
+            midiDriver.write(message.getMessageBytes());
+        }
     }
 
-    private void stopNote() {
-        MidiEvent event = new MidiEvent();
-        event.setNoteOff();
-        event.setEventChannel(1); // out of 1-16
-        event.setEventPitch(currentKey, 0, 0);
-        event.setEventVelocity((byte)0x00);
+    private void stopNote(Instrument instrument) {
+        InstrumentEvent event = new InstrumentEvent();
+        event.setInstrument(instrument);
+        event.setTurnOn(false);
+        event.setPitch(currentKey.getPitch(0, 0));
+        event.setVelocity(127);
 
-        midiDriver.write(event.getEvent());
+        for (MidiMessage message : instrumentPlayer.getMidiEvents(event)) {
+            midiDriver.write(message.getMessageBytes());
+        }
+    }
+
+    private void playMajorChord(Instrument instrument) {
+        int[] offsets = {0, 4, 7};
+        for (int offset : offsets) {
+            InstrumentEvent event = new InstrumentEvent();
+            event.setInstrument(instrument);
+            event.setTurnOn(true);
+            event.setPitch(currentKey.getPitch(0, offset));
+            event.setVelocity(127);
+
+            for (MidiMessage message : instrumentPlayer.getMidiEvents(event)) {
+                midiDriver.write(message.getMessageBytes());
+            }
+        }
+    }
+
+    private void stopMajorChord(Instrument instrument) {
+        int[] offsets = {0, 4, 7};
+        for (int offset : offsets) {
+            InstrumentEvent event = new InstrumentEvent();
+            event.setInstrument(instrument);
+            event.setTurnOn(false);
+            event.setPitch(currentKey.getPitch(0, offset));
+            event.setVelocity(127);
+
+            for (MidiMessage message : instrumentPlayer.getMidiEvents(event)) {
+                midiDriver.write(message.getMessageBytes());
+            }
+        }
     }
 
     @Override

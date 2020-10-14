@@ -1,5 +1,10 @@
 package com.noisystudios.tabletmvp.midi;
 
+import static com.noisystudios.tabletmvp.midi.MidiConstants.NOTE_ON;
+import static com.noisystudios.tabletmvp.midi.MidiConstants.NOTE_OFF;
+import static com.noisystudios.tabletmvp.midi.MidiConstants.PERCUSSION_OFFSET;
+import static com.noisystudios.tabletmvp.midi.MidiConstants.PERCUSSION_PITCHES;
+
 // This is a POJO which might get some complex population code
 public class InstrumentEvent {
 
@@ -36,16 +41,23 @@ public class InstrumentEvent {
         this.turnOn = turnOn;
     }
 
-    public MidiEvent toMidiEvent(final int channel) {
-        MidiEvent event = new MidiEvent().withEventPitch((byte)pitch)
-                                         .withEventVelocity((byte)velocity);
+    public MidiMessage getMidiMessageOnChannel(final int channel) {
+        MidiMessage message = new MidiMessage();
 
-        if (turnOn) event.setNoteOn();
-        else event.setNoteOff();
+        message.setStatusByte(turnOn ? NOTE_ON : NOTE_OFF);
+        message.addToStatusByte((byte)channel);
 
-        event.setEventChannel(channel);
+        // if percussion, midicode is the pitch for that percussion instrument
+        if (PERCUSSION_PITCHES.containsKey(instrument)) {
+            message.setByte1(PERCUSSION_PITCHES.get(instrument).byteValue());
+        }
+        else {
+            message.setByte1((byte)pitch);
+        }
 
-        return event;
+        message.setByte2((byte)velocity);
+
+        return message;
     }
 
 }

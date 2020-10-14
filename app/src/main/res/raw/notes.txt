@@ -26,8 +26,12 @@ classes:
 MidiConstants (import from billthefarmers stuff)
 Notes (enum of notes and conversion to midi pitch byte based on octave)
 Instruments (enum of instruments)
-InstrumentEvent (instrument + note + velocity + exceptional-case-handler class that converts to MidiEvent)
+InstrumentEvent (instrument + note + velocity + exceptional-case-handler class)
 MidiEvent (literally just a 3 byte wrapper class)
 InstrumentPlayer (converts instrumentEvent into series of midiEvents)
 
 InstrumentPlayer (needs to be initialized to get the MIDI writer)
+
+
+
+for next time, change Notes from enum to pojo class, add in flat/sharp and static/instance translation support
